@@ -1,5 +1,6 @@
 import pyfiglet
 import random
+import sys
 
 def select_difficulty():
     print('''
@@ -55,6 +56,16 @@ You have 5 chances to guess the correct number.
 
     difficulty = select_difficulty()
     game_logic(difficulty)
+    print('Want to play again? (y/n)')
+    play_again = input('Enter your choice: ').lower()
+    if play_again == 'y':
+        main()
+    elif play_again == 'n':
+        print('Thanks for playing! Goodbye!')
+        sys.exit()
+    else:
+        print('Invalid choice. Exiting the game.')
+        sys.exit()
 
 
 main()
