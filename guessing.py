@@ -27,6 +27,18 @@ Please select the difficulty level:
 def game_logic(chances):
     number_to_guess = random.randint(1, 100)
     start_time = time.time()
+    
+    hint = input('Do you want a hint? (y/n): ').lower()
+    if hint == 'y':
+        if number_to_guess % 2 == 0:
+            print('Hint: The number is even.\n')
+        else:
+            print('Hint: The number is odd.\n')
+    elif hint == 'n':
+        print('\n')
+    else:
+        print('Invalid choice. No hint provided.\n')
+
     while chances > 0:
         try:
             guess = int(input('Enter your guess: '))
