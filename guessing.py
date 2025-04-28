@@ -2,6 +2,7 @@ import pyfiglet
 import random
 import sys
 import time
+import csv
 
 def select_difficulty():
     print('''
@@ -27,7 +28,9 @@ Please select the difficulty level:
 def game_logic(chances):
     number_to_guess = random.randint(1, 100)
     start_time = time.time()
-    
+    total_chances = chances
+    success = False
+
     hint = input('Do you want a hint? (y/n): ').lower()
     if hint == 'y':
         if number_to_guess % 2 == 0:
@@ -48,21 +51,36 @@ def game_logic(chances):
             if guess == number_to_guess:
                 end_time = time.time()
                 elapsed_time = end_time - start_time
-                print('Congratulations! You guessed the correct number in {} attemps!\n'.format(10 - chances + 1))
+                attempts = total_chances - chances + 1
+                print('Congratulations! You guessed the correct number in {} attemps!\n'.format(attempts))
                 print(f'You took {elapsed_time:.2f} seconds to play the game.\n')
+                success = True
                 break
             elif guess < number_to_guess:
                 print('Incorrect! The number is greater than {}.\n'.format(guess))
             else:
                 print('Too high! The number is less than {}.\n'.format(guess))
             chances -= 1
-            if chances == 0:
-                end_time = time.time()
-                elapsed_time = end_time - start_time
-                print(f'Sorry, you have no more chances left. The correct number was {number_to_guess}.\n')
-                print(f'You took {elapsed_time:.2f} seconds to play the game.\n')
         except ValueError:
             print('Invalid input. Please enter a valid number.\n')
+
+    if not success:
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print(f'Sorry, you have no more chances left. The correct number was {number_to_guess}.\n')
+        print(f'You took {elapsed_time:.2f} seconds to play the game.\n')
+
+    save_results_to_csv(success, attempts, elapsed_time, number_to_guess)
+
+def save_results_to_csv(success, attempts, elapsed_time, number_to_guess):
+    with open('game_results.csv', mode='a+', newline='') as file:
+        writer = csv.writer(file)
+
+        file.seek(0)
+        if not file.read(1):
+            writer.writerow(['Success', 'Attempts', 'Elapsed Time (seconds)', 'Number to Guess'])
+
+        writer.writerow(['Yes' if success else 'No', attempts if success else 'N/A', f'{elapsed_time:.2f}', number_to_guess])
 
 def main():
     f = pyfiglet.Figlet(font='small', width=80)
@@ -79,10 +97,10 @@ You have 5 chances to guess the correct number.
     if play_again == 'y':
         main()
     elif play_again == 'n':
-        print('Thanks for playing! Goodbye!')
+        print('Thanks for playing! Goodbye!\n')
         sys.exit()
     else:
-        print('Invalid choice. Exiting the game.')
+        print('Invalid choice. Exiting the game.\n')
         sys.exit()
 
 
