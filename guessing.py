@@ -1,4 +1,5 @@
 import pyfiglet
+import random
 
 def select_difficulty():
     print('''
@@ -10,16 +11,37 @@ def select_difficulty():
     while True:
         choice = input('Enter your choice: ')
         if choice == '1':
-            print('Great! You have selected the Easy difficulty level.\nLets\'s start the game!')
+            print('Great! You have selected the Easy difficulty level.\nLets\'s start the game!\n')
             return 10
         elif choice == '2':
-            print('Great! You have selected the Medium difficulty level.\nLets\'s start the game!')
+            print('Great! You have selected the Medium difficulty level.\nLets\'s start the game!\n')
             return 5
         elif choice == '3':
-            print('Great! You have selected the Hard difficulty level.\nLets\'s start the game!')
+            print('Great! You have selected the Hard difficulty level.\nLets\'s start the game!\n')
             return 3
         else:
-            print('Invalid choice. Please try again.')
+            print('Invalid choice. Please try again.\n')
+
+def game_logic(chances):
+    number_to_guess = random.randint(1, 100)
+    while chances > 0:
+        try:
+            guess = int(input('Enter your guess: '))
+            if guess < 1 or guess > 100:
+                print('Please enter a number between 1 and 100.')
+                continue
+            if guess == number_to_guess:
+                print('Congratulations! You guessed the correct number in {} chances!'.format(10 - chances + 1))
+                break
+            elif guess < number_to_guess:
+                print('Incorrect! The number is greater than {}.\n'.format(guess))
+            else:
+                print('Too high! The number is less than {}.\n'.format(guess))
+            chances -= 1
+            if chances == 0:
+                print(f'Sorry, you have no more chances left. The correct number was {number_to_guess}.')
+        except ValueError:
+            print('Invalid input. Please enter a valid number.')
 
 
 def main():
@@ -32,3 +54,7 @@ def main():
           ''')
 
     difficulty = select_difficulty()
+    game_logic(difficulty)
+
+
+main()
