@@ -1,6 +1,7 @@
 import pyfiglet
 import random
 import sys
+import time
 
 def select_difficulty():
     print('''
@@ -25,6 +26,7 @@ Please select the difficulty level:
 
 def game_logic(chances):
     number_to_guess = random.randint(1, 100)
+    start_time = time.time()
     while chances > 0:
         try:
             guess = int(input('Enter your guess: '))
@@ -32,7 +34,10 @@ def game_logic(chances):
                 print('Please enter a number between 1 and 100.')
                 continue
             if guess == number_to_guess:
-                print('Congratulations! You guessed the correct number in {} attemps!'.format(10 - chances + 1))
+                end_time = time.time()
+                elapsed_time = end_time - start_time
+                print('Congratulations! You guessed the correct number in {} attemps!\n'.format(10 - chances + 1))
+                print(f'You took {elapsed_time:.2f} seconds to play the game.\n')
                 break
             elif guess < number_to_guess:
                 print('Incorrect! The number is greater than {}.\n'.format(guess))
@@ -40,10 +45,12 @@ def game_logic(chances):
                 print('Too high! The number is less than {}.\n'.format(guess))
             chances -= 1
             if chances == 0:
-                print(f'Sorry, you have no more chances left. The correct number was {number_to_guess}.')
+                end_time = time.time()
+                elapsed_time = end_time - start_time
+                print(f'Sorry, you have no more chances left. The correct number was {number_to_guess}.\n')
+                print(f'You took {elapsed_time:.2f} seconds to play the game.\n')
         except ValueError:
-            print('Invalid input. Please enter a valid number.')
-
+            print('Invalid input. Please enter a valid number.\n')
 
 def main():
     f = pyfiglet.Figlet(font='small', width=80)
@@ -56,8 +63,7 @@ You have 5 chances to guess the correct number.
 
     difficulty = select_difficulty()
     game_logic(difficulty)
-    print('Want to play again? (y/n)')
-    play_again = input('Enter your choice: ').lower()
+    play_again = input('Want to play again? (y/n): ').lower()
     if play_again == 'y':
         main()
     elif play_again == 'n':
